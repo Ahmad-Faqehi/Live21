@@ -1,5 +1,7 @@
 <?php
 include "../includes/DataBase.php";
+include "require.php";
+include "functions.php";
 session_start();
 if(isset($_SESSION['dashId:TVTC'])){
 $isLogin = true;
@@ -36,5 +38,16 @@ if(!isset($page_title)){
     <link href="css/mystyle.css" rel="stylesheet">
     <link rel="stylesheet" href="css/sb-admin-2.css">
 
+    <!-- Time -->
+    <link rel="stylesheet" href="lib/flatpickr.css">
+    <link rel="stylesheet" href="lib/dark.css">
+
+    <!-- sweet alert -->
+    <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
+    <script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
+
+    <?php if($page_title == "أضافة مباراة" || $page_title == "تعديل مباراة"): ?>
+    <link rel="stylesheet" href="css/select2.min.css">
+    <?php endif; ?>
 
 </head>

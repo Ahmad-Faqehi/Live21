@@ -97,10 +97,10 @@ session_start();
                                 <?php endif; ?>
                                 <form onSubmit="return false"  class="user"   >
                                     <div class="form-group">
-                                        <input type="text" class="form-control form-control-user" name="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="أسم المستخدم او الأئميل" required>
+                                        <input type="text" class="form-control form-control-user" name="email" id="email" aria-describedby="emailHelp" placeholder="أسم المستخدم او الأئميل" required>
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control form-control-user" name="password" id="exampleInputPassword" placeholder="كلمة المرور" required>
+                                        <input type="password" class="form-control form-control-user" name="password" id="password" placeholder="كلمة المرور" required>
                                     </div>
                                     <input type="submit" id="submit" onclick="login()" value="دخول" class="btn btn-primary btn-user font-weight-bold Font-tajawal btn-block">
                                 </form>
@@ -139,17 +139,16 @@ session_start();
         return re.test(String(email).toLowerCase());
     }
 
-    function register() {
+    function login() {
 
         var email=document.getElementById("email").value;
         var password=document.getElementById("password").value;
-        var username=document.getElementById("username").value;
+
 
         const Url = "ajax/login.php";
         const data={
-            username: username,
             email: email,
-            password, password
+            password: password
         }
         $.post(Url,data ,function (response,status) {
             // console.log(response.m);

@@ -27,37 +27,38 @@
         <div class="head-menu">التحكم</div>
     </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link text-center" href="orders.php?do=support">
-            <i class="far fa-question-circle"></i>
-            <span>تعديل مبارة</span>
-        </a>
-    </li>
 
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link text-center" href="orders.php?do=key">
-            <i class="fas fa-key"></i>
+        <a class="nav-link text-center" href="add-match.php">
+            <i class="fas fa-plus"></i>
             <span>أضافة مبارة جديدة</span>
         </a>
     </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link text-center" href="orders.php?do=security">
+        <a class="nav-link text-center" href="matches.php">
+            <i class="far fa-question-circle"></i>
+            <span>تعديل مبارة</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link text-center" href="teams.php">
             <i class="fas fa-user-shield"></i>
             <span>ادارة الفرق </span>
         </a>
     </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link text-center" href="orders.php?do=doctor">
-            <i class="fas fa-user-md"></i>
-            <span> القنوات </span>
-        </a>
-    </li>
+<!--    <li class="nav-item">-->
+<!--        <a class="nav-link text-center" href="orders.php?do=doctor">-->
+<!--            <i class="fas fa-user-md"></i>-->
+<!--            <span> القنوات </span>-->
+<!--        </a>-->
+<!--    </li>-->
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -70,8 +71,8 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link text-center" href="loss.php">
-            <i class="fas fa-map-marker"></i>
+        <a class="nav-link text-center" href="ads.php">
+            <i class="fas fa-dollar-sign"></i>
             <span>الاعلانات</span>
         </a>
     </li>
@@ -79,7 +80,7 @@
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link text-center" href="loss.php">
-            <i class="fas fa-map-marker"></i>
+            <i class="fas fa-users"></i>
             <span>المستخدمين</span>
         </a>
     </li>

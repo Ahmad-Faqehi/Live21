@@ -24,16 +24,18 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
             returnJSON(array('tp' => 'error', 't' => 'خطأ', 'm' => 'أنت مسجل مسبقاً بهذا الائميل او اسم المستخدم','b' => true));
         }else{
 
+            $passwordHashed=password_hash($_POST['password'], PASSWORD_DEFAULT);
         $stmt = $conn->prepare("INSERT INTO `users` (`Username`, `Email`, `Password`, `Roal`, `Time_Registered`) VALUES (:usernmae,:email,:pass,:roal,:time_reg )");
         $stmt->bindValue(":usernmae", $username);
         $stmt->bindValue(":email", $email);
-        $stmt->bindValue(":pass", $email);
+        $stmt->bindValue(":pass", $passwordHashed);
         $stmt->bindValue(":roal", "user");
         $stmt->bindValue(":time_reg", time());
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
             $MID = $conn->lastInsertId();
-            $_SESSION['memberId:TVTC'] = $MID;
+            $_SESSION['dashId:TVTC'] = $MID;
+            $_SESSION['dashName:TVTC'] = $username;
             returnJSON(array('tp' => 'success', 't' => 'حسناً', 'm' => 'تم تسجيل حسابك بنجاح','b' => false));
 
         } else {

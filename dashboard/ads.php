@@ -1,46 +1,16 @@
 <?php
 
-//if(!isset($_GET['do'])): header("Location: index.php"); die(); endif;
-//if(isset($_GET['do'])){
-//
-//    $do = $_GET['do'];
-//
-//    switch ($do){
-//        case 'support':
-//            $job = "الدعم الفني";
-//            break;
-//
-//        case 'key':
-//            $job = "مسؤولة المفاتيح";
-//            break;
-//
-//        case 'security':
-//            $job = "الامن";
-//            break;
-//
-//        case 'doctor':
-//            $job = "الطبيبة";
-//            break;
-//
-//        default:
-//            $job = "";
-//    }
-//    if(empty($job)){
-//        header("Location: index.php"); die();
-//    }
-//
-//    $lable = " نموذج " . $job;
-//}
 
+$page_title = "الاعلانات";
 function getState($id){
     $state= "";
     switch ($id){
         case 0:
-            $state = "غير فعال";
+            $state = "<span class='text-muted'>غير فعال</span>";
             break;
 
         case 1:
-            $state = "فعال";
+            $state = "<span class='text-dark'>فعال <i class=\"far fa-check-circle text-success\"></i></span>";
             break;
 
 
@@ -98,7 +68,7 @@ function getState($id){
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <?php include "includes/menu.php" ?>
+    <?php include "includes/menu.php";?>
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
@@ -150,11 +120,14 @@ function getState($id){
 
                     <div class="col-xl-12 col-lg-12">
 
+                        <?php
+                        $ad = new Ads();
+                        ?>
                         <!-- Dropdown Card Example -->
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                             <div class="card-header py-3 ">
-                                <h5 class="m-0 font-weight-bold text-dark text-center">بيانات المسؤلين</h5>
+                                <h5 class="m-0 font-weight-bold text-dark text-center">الاعلانات</h5>
                             </div>
                             <!-- Card Body -->
                             <div class="card-body" style="direction: ltr;">
@@ -170,22 +143,15 @@ function getState($id){
                                         </thead>
                                         <tbody>
                                         <?php
-                                        $stmt=$conn->prepare("SELECT name,roal,email,id FROM `users` WHERE roal != 4 ");
-                                        $stmt->execute();
-                                        $count = 0;
-                                        if($stmt->rowCount() > 0) :
-                                            $rows = $stmt->fetchAll();
-                                            foreach ($rows as $row) :
-                                                ?>
+
+                                            foreach ($ad->getAll() as $the_Ad) : ?>
+
                                                 <tr>
-                                                    <td><?=$row['name']?></td>
-                                                    <td><?php echo  getState($row['roal'])?></td>
-                                                    <td><a href="edit-user.php?id=<?=$row['id']?>" class="btn btn-primary">تعديل</a></td>
+                                                    <td><?=$the_Ad['Ads_Name']?></td>
+                                                    <td><?php echo  getState($the_Ad['Ads_Work'])?></td>
+                                                    <td><a href="edit-ads.php?id=<?=$the_Ad['id']?>" class="btn btn-primary">تعديل</a></td>
                                                 </tr>
-                                            <?php
-                                            endforeach;
-                                        endif;
-                                        ?>
+                                            <?php endforeach; ?>
                                         </tbody>
                                     </table>
                                 </div>

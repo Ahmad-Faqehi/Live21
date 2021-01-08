@@ -153,7 +153,7 @@ session_start();
         const data={
             username: username,
             email: email,
-            password, password
+            password: password
         }
         $.post(Url,data ,function (response,status) {
             // console.log(response.m);

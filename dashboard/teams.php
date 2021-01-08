@@ -1,50 +1,6 @@
-<?php
-
-
-function getSection($id){
-    $section= "";
-    switch ($id){
-        case 1:
-            $section = "الدعم الفني";
-            break;
-
-        case 2:
-            $section = "الامن";
-            break;
-
-        case 3:
-            $section = "الطبيبة";
-            break;
-
-        case 4:
-            $section = "طالبة";
-            break;
-
-        case 5:
-            $section = "المفاتيح";
-            break;
-
-        default:
-            $section = "";
-
-
-    }
-    return $section;
-}
+<?php include "includes/head.php";
 $msg_false = false;
 $msg_true = false;
-?>
-<?php include "includes/head.php";?>
-<?php
-if(isset($_SESSION['alert:true'])){
-    $msg_true = true;
-    unset($_SESSION['alert:true']);
-}
-
-if (isset($_SESSION['alert:false'])){
-    $msg_false = true;
-    unset($_SESSION['alert:false']);
-}
 ?>
 <style>
     .navbar-nav{
@@ -149,7 +105,7 @@ if (isset($_SESSION['alert:false'])){
                                 <h5 class="m-0 font-weight-bold text-dark text-center">بيانات التواصل</h5>
                             </div>
                             <!-- Card Body -->
-                            <div class="card-body" style="direction: ltr;">
+                            <div class="card-body"  >
 
                                 <?php if($msg_true): ?>
                                     <div class="alert alert-success text-right">  تم الحذف بنجاح </div>
@@ -158,41 +114,44 @@ if (isset($_SESSION['alert:false'])){
                                     <div class="alert alert-danger text-right">  حدث خطا أثناء الحذف </div>
                                 <?php endif; ?>
 
+                                <?php
+
+
+                                ?>
                                 <div class="table-responsive">
 
                                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0" dir="rtl">
                                         <thead dir="">
                                         <tr>
-                                            <th>الاسم</th>
-                                            <th>القسم</th>
-                                            <th>تحرير</th>
+                                            <th>No.</th>
+                                            <th>أسم النادي</th>
+                                            <th>تعديل</th>
+
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <?php
-                                        $stmt=$conn->prepare("SELECT * FROM `info_list` ORDER BY `info_list`.`rank` DESC");
-                                        $stmt->execute();
-                                        $count = 0;
-                                        if($stmt->rowCount() > 0) :
-                                            $rows = $stmt->fetchAll();
-                                            foreach ($rows as $row) :
-                                                ?>
-                                                <tr>
-                                                    <td><?=$row['name']?></td>
-                                                    <td><?php echo $row['depart']?></td>
-                                                    <td><a href="edit-lsit.php?id=<?=$row['id']?>" class="btn btn-primary">تعديل</a> &nbsp; <a href="#dlete" onclick="myf(<?=$row['id']?>)"  class="btn btn-danger">حذف</a> </td>
-                                                </tr>
-                                            <?php
-                                            endforeach;
-                                        endif;
+                                        $team = new Equipe();
+                                      $rows = $team->getAll();
+                                      $i=1;
+                                        foreach ($rows as $row) :
+                                            ?>
+                                            <tr>
+                                                <td><?=$i?></td>
+                                                <td><?php echo $row["fullTeamName"];?></td>
+                                                <td><a href="#" class="btn btn-primary btn-circle"><i class="fas fa-edit"></i> </a> <a href="#" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></a></td>
+                                            </tr>
+                                        <?php
+                                        $i++;
+                                        endforeach;
                                         ?>
                                         </tbody>
                                     </table>
-                                    <div class="text-center pt-3 ">
-
-                                        <a href="add-match.php?supervisor" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-plus"></i></span><span class="text"> أضافة مُدربة </span></a> &nbsp; <a href="add-match.php" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-plus"></i></span><span class="text"> أضافة بيانات </span></a>
-
-                                    </div>
+                                    <!--                                    <div class="text-center pt-3 ">-->
+                                    <!---->
+                                    <!--                                        <a href="add-match.php?supervisor" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-plus"></i></span><span class="text"> أضافة مُدربة </span></a> &nbsp; <a href="add-match.php" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-plus"></i></span><span class="text"> أضافة بيانات </span></a>-->
+                                    <!---->
+                                    <!--                                    </div>-->
                                 </div>
 
                             </div>
@@ -203,6 +162,7 @@ if (isset($_SESSION['alert:false'])){
             </div>
 
         </div>
+
 
 
         <!-- Content Row -->
@@ -285,6 +245,7 @@ if (isset($_SESSION['alert:false'])){
 
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.js"></script>
+
 
 <!-- Page level plugins -->
 <script src="vendor/datatables/jquery.dataTables.min.js"></script>

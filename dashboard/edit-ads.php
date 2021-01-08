@@ -1,16 +1,17 @@
+
+<?php
+if(isset($_GET['id'])):
+    $ad_id = (int)$_GET['id'];
+endif;
+if(empty($ad_id) OR !is_numeric($ad_id))
+    exit(header("Location: ads.php"));
+?>
 <?php
 
-
-if(isset($_GET['supervisor'])){
-    $supervisor = 1;
-    $labe = "مًدربة";
-}else{
-    $supervisor = 0;
-    $labe = "بيانات";
-}
-
+include "includes/head.php";
+$ad = new Ads();
+$row = $ad->getById($ad_id);
 ?>
-<?php include "includes/head.php";?>
 <style>
     .navbar-nav{
         padding-right: 0;
@@ -111,62 +112,38 @@ if(isset($_GET['supervisor'])){
 
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
-
-                                <h5 class="m-0 font-weight-bold text-dark Font-tajawal text-center">  أضافة <?=$labe?>  </h5>
+                                <h6 class="m-0 font-weight-bold text-dark Font-tajawal text-center">  تعديل الاعلان   </h6>
                             </div>
                             <div class="card-body">
 
-
-                                <?php
-                                if(isset($_POST['add'])):
-                                    $name = $_POST['name'];
-                                    $email = $_POST['email'];
-                                    $section = $_POST['depart'];
+                                <form onsubmit="return false" class="text-right">
 
 
-                                    if(empty($email) || empty($name)){
-                                        echo "<div class=\"alert alert-danger text-right\"> جميع الحقول مطلوبة </div>";
-                                        exit();
-                                    }else{
-
-                                        $stmtz = $conn->prepare("INSERT INTO `info_list`(`name`, `email`, `depart`,`supervisor`) VALUES (:name,:email,:part,:vistor) ");
-                                        $stmtz->bindValue(":name", $name);
-                                        $stmtz->bindValue(":email", $email);
-                                        $stmtz->bindValue(":part", $section);
-                                        $stmtz->bindValue(":vistor", $supervisor);
-                                        $stmtz->execute();
-                                        if ($stmtz->rowCount() > 0) {
-                                            echo "<div class=\"alert alert-success text-right\"> تم الاضافة بنجاح </div>";
-                                        } else {
-                                            echo "<div class=\"alert alert-danger text-right\"> حدث خطا عند الاضافة. حاول مره أخرى </div>";
-                                        }
-
-                                    }
-
-
-                                endif;
-                                ?>
-
-
-                                <form action="" method="post" class="text-right">
-
-                                    <label for="username" class="pull-right text-dark">الاسم</label>
+                                    <label for="username" class="pull-right text-dark">اسم الاعلان </label>
                                     <div class="form-group">
-                                        <input type="text" name="name" class="form-control form-control-user"  required>
+                                        <input type="text" class="form-control form-control-user" id="ad_name"  value="<?=$row['Ads_Name'];?>" required>
                                     </div>
 
-                                    <label for="username" class="pull-right text-dark">الائميل</label>
-                                    <div class="form-group">
-                                        <input type="email" name="email" class="form-control form-control-user"  required>
+                                    <label for="username" class="pull-right text-dark">شفرة الاعلان</label>
+                                    <div class="form-group" dir="ltr">
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" id="ad_code" rows="7"><?=$row['Ads_Code']?></textarea>
+
                                     </div>
 
-                                    <label for="pass" class="pull-right text-dark">القسم</label>
-                                    <div class="form-group">
-                                        <input type="text" name="depart" class="form-control form-control-user"  required >
-                                    </div>
+                                    <?php
+
+                                        ?>
+                                        <label for="username" class="pull-right text-dark">حالة الاعلان</label>
+                                        <div class="form-group">
+                                            <select class="form-control" name="dep" id="select">
+                                                <option value="0" id="not_work">غير فعال</option>
+                                                <option value="1" id="work">فعال</option>
+
+                                            </select>
+                                        </div>
 
 
-                                    <input type="submit" name="add" value="أضافة" class="btn btn-dark btn-block">
+                                    <input type="submit"  onclick="update()" value="تعديل" class="btn btn-dark btn-block">
 
                                 </form>
 
@@ -213,24 +190,7 @@ if(isset($_GET['supervisor'])){
     </a>
 </div>
 
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
@@ -249,6 +209,44 @@ if(isset($_GET['supervisor'])){
 <!-- Page level custom scripts -->
 <script src="js/demo/datatables-demo.js"></script>
 
+
+<!-- Page level custom scripts -->
+<script>
+<?php if($row['Ads_Work'] == 0): ?>  $("#not_work").attr("selected","selected");  <?php endif; ?>
+<?php if($row['Ads_Work'] == 1): ?>  $("#work").attr("selected","selected");  <?php endif; ?>
+
+
+</script>
+
+<script>
+    function update() {
+
+        var ad_code = $("textarea").val();
+        var ad_name = document.getElementById("ad_name").value;
+        var ad_type = document.getElementById("select").value;
+        const Url = "ajax/edit-ads.php";
+        const data={
+            ad_code: ad_code,
+            ad_name: ad_name,
+            ad_type: ad_type,
+            ad_id: <?=$ad_id?>
+        }
+        $.post(Url,data ,function (response,status) {
+        swal.fire({
+            title: response.t,
+            text: response.m,
+            icon: response.tp,
+            showConfirmButton: response.b,
+            confirmButtonText: 'موافق'
+        });
+            if(response.tp == "success"){
+                setTimeout(function () { location.href = "./ads.php";}, 3000);
+            }
+        })
+
+    }
+
+</script>
 </body>
 
 </html>

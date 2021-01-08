@@ -107,7 +107,7 @@ include "includes/head.php";
                                     </div>
                                     <div class="col mr-2">
                                         <div class="font-weight-bold text-dark text-uppercase mb-1 text-right Fonty">أجمالي طلبات دعم الفني</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'support'")->rowCount();  ?> </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php //echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'support'")->rowCount();  ?> </div>
                                     </div>
 
                                 </div>
@@ -125,7 +125,7 @@ include "includes/head.php";
                                     </div>
                                     <div class="col mr-2">
                                         <div class="Fonty font-weight-bold text-dark text-uppercase mb-1 text-right">أجمالي طلبات  مسؤولة المفاتيح</div>
-                                        <div class=" h5 mb-1 font-weight-bold text-gray-800 pl-3"><?php echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'key'")->rowCount();  ?></div>
+                                        <div class=" h5 mb-1 font-weight-bold text-gray-800 pl-3"><?php //echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'key'")->rowCount();  ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +142,7 @@ include "includes/head.php";
                                     </div>
                                     <div class="col mr-2">
                                         <div class="font-weight-bold text-dark text-uppercase mb-1 text-right Fonty">أجمالي طلبات الامن</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'security'")->rowCount();  ?></div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php //echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'security'")->rowCount();  ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -158,7 +158,7 @@ include "includes/head.php";
                                     </div>
                                     <div class="col mr-2">
                                         <div class="font-weight-bold text-dark text-uppercase mb-1 text-right Fonty">أجمالي طلبات الطبيبة</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'doctor'")->rowCount();  ?></div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php //echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'doctor'")->rowCount();  ?></div>
                                     </div>
                                 </div>
                             </div>
