@@ -1,5 +1,5 @@
 <?php
-include "../includes/DataBase.php";
+include "Database.php";
 include "require.php";
 include "functions.php";
 session_start();
@@ -23,6 +23,7 @@ if(!isset($page_title)){
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="token" content="<?php if(isset($_SESSION['_token'])) { echo $_SESSION['_token']; } ?>">
 
     <title> التحكم -  <?=$page_title?></title>
 
@@ -34,7 +35,6 @@ if(!isset($page_title)){
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../fonts/flat-icons2/flaticon.css">
     <link href="css/mystyle.css" rel="stylesheet">
     <link rel="stylesheet" href="css/sb-admin-2.css">
 
@@ -46,8 +46,20 @@ if(!isset($page_title)){
     <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
     <script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
 
-    <?php if($page_title == "أضافة مباراة" || $page_title == "تعديل مباراة"): ?>
-    <link rel="stylesheet" href="css/select2.min.css">
+    <?php if($page_title == "الصفحة الرئيسية" ): ?>
+    <link rel="stylesheet" href="css/checkSwitch.css">
     <?php endif; ?>
 
+    <?php if($page_title == "أضافة مباراة" || $page_title == "تعديل مباراة"): ?>
+    <link rel="stylesheet" href="css/select2.min.css">
+    <link rel="stylesheet" href="css/checkSwitch.css">
+        <link rel="stylesheet" type="text/css" href="css/DateTimePicker.css" />
+    <?php endif; ?>
+
+    <style>
+        *{
+            font-family: 'Tajawal', sans-serif;
+
+        }
+    </style>
 </head>

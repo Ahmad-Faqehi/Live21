@@ -53,14 +53,15 @@
     </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
-<!--    <li class="nav-item">-->
-<!--        <a class="nav-link text-center" href="orders.php?do=doctor">-->
-<!--            <i class="fas fa-user-md"></i>-->
-<!--            <span> القنوات </span>-->
-<!--        </a>-->
-<!--    </li>-->
+    <li class="nav-item">
+        <a class="nav-link text-center" href="servers.php">
+            <i class="fas fa-link"></i>
+            <span> روابط سيرفرات </span>
+        </a>
+    </li>
 
     <!-- Divider -->
+    <?php if($_SESSION['dashRank:TVTC'] == "admin"){?>
     <hr class="sidebar-divider">
 
     <!-- Heading -->
@@ -79,11 +80,12 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link text-center" href="loss.php">
+        <a class="nav-link text-center" href="users.php">
             <i class="fas fa-users"></i>
             <span>المستخدمين</span>
         </a>
     </li>
+    <?php } ?>
 
 
     <!-- Divider -->

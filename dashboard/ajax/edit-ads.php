@@ -1,13 +1,16 @@
 <?php
+session_start();
+include "../includes/Database.php";
 include "../includes/functions.php";
 include "../includes/require.php";
-include "../includes/Database.php";
 if($_SERVER['REQUEST_METHOD'] == "POST") {
 
-
+    if(!isset($_SESSION['_token']) OR !isset($_POST['token']) OR $_POST['token'] != $_SESSION['_token'] OR !isset($_SESSION['dashId:TVTC']) OR $_SESSION['dashRank:TVTC'] != "admin"){
+        returnJSON(array('tp' => 'error', 't' => 'خطأ', 'm' => 'حدث خطأ غير معروف من فضلك أعد تحميل هذه الصفحة','b' => true));
+    }
 // Get values.
 
-    $ad_code = htmlentities($_POST["ad_code"]);
+    $ad_code = "";
     $ad_name = $_POST["ad_name"];
     $ad_id = (int)$_POST["ad_id"];
     $ad_type = $_POST["ad_type"];

@@ -1,6 +1,6 @@
 <?php
 
-require_once ("DataBase1");
+require_once("Database.php");
 class Links extends Db_Object
 {
 

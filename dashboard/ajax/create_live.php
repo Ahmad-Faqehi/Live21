@@ -1,9 +1,12 @@
 <?php
+session_start();
+include "../includes/Database.php";
 include "../includes/functions.php";
 include "../includes/require.php";
-include "../includes/Database.php";
 if($_SERVER['REQUEST_METHOD'] == "POST") {
-
+    if(!isset($_SESSION['_token']) OR !isset($_POST['token']) OR $_POST['token'] != $_SESSION['_token'] OR !isset($_SESSION['dashId:TVTC'])){
+        returnJSON(array('tp' => 'error', 't' => 'خطأ', 'm' => 'حدث خطأ غير معروف من فضلك أعد تحميل هذه الصفحة','b' => true));
+    }
 
 // Get values.
     $ks_link = $_POST["ks_link"];
@@ -20,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     $team_goust = $_POST["team_goust"];
     $time = $_POST["time"];
     $time_type = $_POST["time_type"];
-    $ad_center = $_POST["ad_center"];
+    $ad_center = $_POST["center_ads"];
 
     if($time_type == "manual"){
         $time = strtotime($time);
@@ -41,9 +44,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
     // Create the live
+    $match->id = null;
     $match->KS_URL = $ks_link;
     $match->Team_Gust = $team_goust;
     $match->Team_Host = $team_host;
+    $match->GA_URL = null;
+    $match->Channel_Name = null;
     $match->Time_OFF = $time;
     $match->State_Match = 1;
     $match->Center_Ad = $ad_center;

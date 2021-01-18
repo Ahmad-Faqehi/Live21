@@ -1,5 +1,5 @@
 <?php
-require_once ("DataBase1");
+require_once("Database.php");
 
 class Ads extends Db_Object
 {

@@ -7,7 +7,7 @@ if (isset($_GET['id'])):
     $match_id = (int)$_GET['id'];
 endif;
 if (empty($match_id) OR !is_numeric($match_id))
-    exit(header("Location: ads.php"));
+    exit(header("Location: index.php"));
 
 
 ?>
@@ -15,6 +15,7 @@ if (empty($match_id) OR !is_numeric($match_id))
 
 
 <style>
+
     .navbar-nav{
         padding-right: 0;
     }
@@ -47,6 +48,13 @@ if (empty($match_id) OR !is_numeric($match_id))
         font-size: 12px;
     }
 
+    #only-date::placeholder{
+        text-align: right;
+    }
+
+    #only-time::placeholder{
+        text-align: right;
+    }
     *{
         font-family: 'Tajawal', sans-serif;
 
@@ -80,13 +88,6 @@ if (empty($match_id) OR !is_numeric($match_id))
                 <ul class="navbar-nav mr-auto">
 
 
-                    <!-- Nav Item - Alerts -->
-                    <?php include "includes/alert.php"?>
-                    <!-- End of Alert -->
-
-                    <!-- Nav Item - message -->
-                    <?php include "includes/msg.php"?>
-                    <!-- END - message -->
 
                     <!-- Nav Item - Logout and options -->
                     <?php include "includes/logout-menu.php"?>
@@ -125,20 +126,26 @@ if (empty($match_id) OR !is_numeric($match_id))
 
                                 date_default_timezone_set("Asia/Riyadh");
                                 $time_now = time()+7800;
-                                $time_stop = date('H:i A', $time_now);
+                                $time_stop = date('h:i A', $time_now);
+
+                                $dayNow = date('l', time());
+                                $dateNow = date('Y-m-d', time());
+                                $dayTommoro = date('l', strtotime( $dateNow . " +1 days"));
 
                                 ?>
                                 <?php $team = new Equipe();
                                 $row_team = $team->getAll();
                                 $match = new Live();
                                 $row_match = $match->getById($match_id);
+                                if(!$row_match){
 
+                                    exit("<script>location.href = \"./matches.php\";</script>");
+                                }
+
+                                $proLink = new ProLinks();
                                 $links = new Links();
                                 $row_link = $links->getById($row_match['Custom_Link']);
 
-                                function findSelected(){
-
-                                }
                                 ?>
 
 
@@ -150,7 +157,6 @@ if (empty($match_id) OR !is_numeric($match_id))
 
                                         <div class="col-6">
                                             <div class="form-group">
-                                                <!--                                                <input type="text" name="name" id="team_host" class="form-control form-control-user"  placeholder="النادي الاول" >-->
                                                 <select class="sl2 form-control form-control-user" id="team_host"   >
 
                                                     <?php foreach ($row_team as $val): ?>
@@ -163,7 +169,6 @@ if (empty($match_id) OR !is_numeric($match_id))
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
-                                                <!--                                                <input type="text" name="name" id="team_goust" class="form-control form-control-user" placeholder="النادي الثاني"  >-->
                                                 <select class="sl2 form-control form-control-user" id="team_goust"   >
 
                                                     <?php foreach ($row_team as $val): ?>
@@ -173,27 +178,27 @@ if (empty($match_id) OR !is_numeric($match_id))
                                             </div>
                                         </div>
                                     </div>
-                                    <label for="username" class="pull-right text-dark">رابط موقع البث من ستار</label>
+                                    <label for="username" class="pull-right text-dark"> رابط موقع البث من ستار <span class="text-dark" id="what"> <i class="far fa-question-circle text-primary"></i></span></label>
                                     <div class="form-group">
                                         <input type="url" name="name" id="ks_link" class="form-control form-control-user" value="<?=$row_match['KS_URL']?>"   >
                                     </div>
 
-                                    <label for="username" class="pull-right text-dark">رابط السيرفر الاول</label>
+                                    <label for="username" class="pull-right text-dark">رابط السيرفر الاول</label> <span id="show-servers1" class="btn-link"> عرض السيرفرات  </span>
                                     <div class="form-group">
                                         <input type="url" name="name" id="link1" class="form-control form-control-user" value="<?=$row_link['Link1']?>"   >
-                                        <label for="" class="pt-2"> للجوال فقط  	&nbsp;  <input type="checkbox" id="type1"> </label>
+                                        <label for="type1" class="pt-2"> للجوال فقط  	&nbsp;  <input type="checkbox" id="type1"> </label>
                                     </div
 
-                                    <label for="username" class="pull-right text-dark">رابط السيرفر الثاني</label>
+                                    <label for="username" class="pull-right text-dark">رابط السيرفر الثاني</label> <span id="show-servers2" class="btn-link"> عرض السيرفرات  </span>
                                     <div class="form-group">
                                         <input type="url" name="name" id="link2" class="form-control form-control-user"  value="<?=$row_link['Link2']?>" >
-                                        <label for="" class="pt-2"> للجوال فقط  	&nbsp;  <input type="checkbox" id="type2"> </label>
+                                        <label for="type2" class="pt-2"> للجوال فقط  	&nbsp;  <input type="checkbox" id="type2"> </label>
                                     </div>
 
-                                    <label for="username" class="pull-right text-dark">رابط السيرفر الثالث</label>
+                                    <label for="username" class="pull-right text-dark">رابط السيرفر الثالث</label> <span id="show-servers3" class="btn-link"> عرض السيرفرات  </span>
                                     <div class="form-group">
-                                        <input type="url" name="name" id="link3" class="form-control form-control-user" value="<?=$row_link['Link3']?>"  >
-                                        <label for="" class="pt-2"> للجوال فقط  	&nbsp;  <input type="checkbox" id="type3"> </label>
+                                        <input type="url" name="name" id="link3" class="form-control form-control-user " value="<?=$row_link['Link3']?>"  >
+                                        <label for="type3" class="pt-2"> للجوال فقط  	&nbsp;  <input type="checkbox" id="type3"> </label>
                                     </div>
 
                                     <label for="pass" class="pull-right text-dark">اعلان منتصف البث</label>
@@ -205,15 +210,29 @@ if (empty($match_id) OR !is_numeric($match_id))
                                     </div>
 
 
-                                    <label for="pass" class="pull-right text-dark">الوقت المتوقع ل انتهاء المبارة</label>
-                                    <div class="form-group">
-                                        <input type="time" name="depart" id="time" class="form-control form-control-user" placeholder="تحديد الوقت"  value="<?=date('H:i', $row_match['Time_OFF'])?>"  >
+                                        <label for="pass" class="pull-right text-dark">وقت نهاية المبارة</label>
+                                        <div class="form-group"  >
+
+                                            <input type="hidden" id="hiden-time" value="<?=$row_match['Time_OFF']?>">
+                                            <input type="text" id="show-time" readonly="" class="form-control form-control-user border-dark" placeholder="تحديد الوقت"  value="<?php if($row_match["Time_OFF"]) echo date('h:i A', $row_match["Time_OFF"])   ?>"  >
+                                        </div>
+
+
+
+                                    <div class="text-center p-3">
+                                    <div class="">
+
+
+                                        <span  class="text-dark">حالة البث</span> &nbsp;
+                                        <label class="switch">
+                                            <input type="checkbox" id="state_match">
+                                            <span class="slider round"></span>
+                                        </label>
+
+                                    </div>
                                     </div>
 
-
-
-
-                                    <input type="submit" onclick="addMatch()" name="add" value="أضافة" class="btn btn-dark btn-block">
+                                    <input type="button" onclick="addMatch()"  name="add" value="تعديل" class="btn btn-dark btn-block">
 
                                 </form>
 
@@ -227,6 +246,97 @@ if (empty($match_id) OR !is_numeric($match_id))
         </div>
     </div>
 
+    <div id="what-ks" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-white"> أضافة نادي جديد </h4>
+                </div>
+                <div class="modal-body" style="font-size: 16px;">
+                    <div class="text-center p-3">
+
+                        <p class="text-dark">
+                            قم بلصق رابط المبارة من موقع <a href="http://table.super-kora.tv/" target="_blank" class="btn-link">كورة ستار</a>   بعد ذالك سوف يتم استخراج البثوث المستخدمة لديهم و يتم تحديثها تلقائي
+                        </p>
+
+                        <span class="text-dark">مثال على رابط مبارة من كورة ستار:</span>
+                        <br>
+                        <span class="text-primary">https://b.kora-star.tv/2020/12/Juventus-vs-Milan.html</span>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="set-time" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-white"> تحديد وقت أنتهاء المباراة </h4>
+                </div>
+                <div class="modal-body" style="font-size: 16px;">
+                    <div class="text-center p-3">
+                        <form onsubmit="return false">
+                            <div class="form-group" dir="ltr">
+                                <label class="text-dark">الوقت المتوقع لنهاية</label>
+<!--                                <input type="text" name="depart"  id="time1" class="form-control form-control-user border-dark" placeholder="تحديد الوقت"  value="--><?php //if($row_match["Time_OFF"]) echo date('Y-m-d H:i', $row_match["Time_OFF"])   ?><!--"  >-->
+                                <input type="text" class="form-control form-control-user  "  id="only-time" data-field="time" placeholder="تحديد الوقت"  readonly>
+                                <br>
+                                <input type="text" class="form-control form-control-user  " id="only-date" data-field="date"  data-min="<?=date('Y-m-d', time())?>" data-max="<?=date('Y-m-d', strtotime( date('Y-m-d', time()) . " +2 days"))?>" placeholder="تحديد التاريخ"  readonly>
+                                <div id="dtBox"></div>
+
+                            </div>
+                            <input type="button" class="btn btn-secondary" onclick="editTime()" value="تعديل">
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="proLinks" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-white"> سيرفرات قنوات </h4>
+                </div>
+                <div class="modal-body" style="font-size: 16px;">
+                    <div class="text-center p-3">
+
+                        <div class="text-dark pb-2">
+                            ملاحظة: هذي السيرفرات تم أضافتها عشوائياً الرجاء التاكد منها من خلال صفحة <a href="servers.php" class="btn-link"> روابط السيرفرات </a>
+                        </div>
+
+                        <form onsubmit="return false">
+                            <input type="hidden" id="forWho">
+                            <div class="form-group">
+                                <select class=" form-control" id="server">
+                                    <?php foreach ($proLink->getAllChannel() as $val): ?>
+                                        <option value="<?=$val["url"]?>"><?=$val["channel"]?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <input type="submit" onclick="setServer()" class="btn btn-dark" value="تحديد">
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <!-- Content Row -->
 
@@ -237,80 +347,151 @@ if (empty($match_id) OR !is_numeric($match_id))
 <!-- End of Main Content -->
 
 
-<!-- Footer -->
-<footer class="sticky-footer bg-white">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2020</span>
-        </div>
-    </div>
-</footer>
-<!-- End of Footer -->
+<?php include "includes/footer.php";?>
 
-</div>
-<!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<div class="text-left">
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-</div>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap core JavaScript-->
-<!--<script src="js/swal.js"></script>-->
-<script src="vendor/jquery/jquery.min.js"></script>
+<!-- Page level custom scripts -->
+<script type="text/javascript" src="js/DateTimePicker.js"></script>
 <script src="js/select2.min.js"></script>
 <script src="js/ar.js"></script>
-
+<script src="js/demo/datatables-demo.js"></script>
+<script src="lib/ar.js"></script>
 <script>
+    $("#hid-time").hide()
+
+    $( "#what" ).click(function() {
+        $('#what-ks').modal('show');
+    });
+
+    $( "#show-servers1" ).click(function() {
+        $('#forWho').val("1");
+        $('#proLinks').modal('show');
+    });
+
+    $( "#show-servers2" ).click(function() {
+        $('#forWho').val("2");
+        $('#proLinks').modal('show');
+    });
+
+    $( "#show-servers3" ).click(function() {
+        $('#forWho').val("3");
+        $('#proLinks').modal('show');
+    });
+
+    $( "#show-time" ).click(function() {
+        $('#set-time').modal('show');
+    });
 
     $('.sl2').select2();
 
 
+    function setServer() {
+        var forWho=document.getElementById("forWho").value;
+        var server=document.getElementById("server").value;
+
+        $("#link"+forWho).val(server);
+        $('#proLinks').modal('hide');
+
+
+    }
+
 </script>
-
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.js"></script>
-
-<!-- Page level plugins -->
-<script src="vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="js/demo/datatables-demo.js"></script>
-<script src="lib/flatpickr.js"></script>
-<script src="lib/ar.js"></script>
-
 <script>
-    // TOdo add selectd to each select tag in form
+    $(document).ready(function()
+    {
+        $("#dtBox").DateTimePicker({
+            dateFormat: "yyyy-MM-dd",
+            timeFormat: "hh:mm AA",
+
+        });
+
+    });
+    function validURL(str) {
+        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        return !!pattern.test(str);
+    }
+
+   function editTime(){
+       $("input").removeClass("border border-danger");
+
+       var time_now = Math.floor(Date.now() / 1000);
+       var time=document.getElementById("only-time").value;
+       var date=document.getElementById("only-date").value;
+       var selectedTime = Date.parse(date + " " + time)/1000;
+       var token = document.querySelector('meta[name="token"]').content;
+       const Url = "ajax/edit-time.php";
+
+       if(time == ""){
+           Swal.fire({
+               title: 'حقل مطلوب',
+               text: 'الرجاء تحديد وقت أنتهاء المبارة',
+               icon: 'warning',
+               confirmButtonColor: '#3085d6',
+               confirmButtonText: 'موافق'
+           })
+           $("#only-time").addClass("border border-danger");
+           return
+       }
+
+       if(date == ""){
+           Swal.fire({
+               title: 'حقل مطلوب',
+               text: 'الرجاء تحديد تاريخ أنتها المبارة',
+               icon: 'warning',
+               confirmButtonColor: '#3085d6',
+               confirmButtonText: 'موافق'
+           })
+           $("#only-date").addClass("border border-danger");
+           return
+       }
+
+       if(time_now >= selectedTime){
+
+           Swal.fire({
+               title: 'الوقت غير صالح',
+               text: 'لقد أدخلت وقت و تاريخ منتهي الرجاء اختيار تاريخ صحيح ',
+               icon: 'warning',
+               confirmButtonColor: '#3085d6',
+               confirmButtonText: 'موافق'
+           })
+
+           return
+       }
+
+       const data = {
+           token : token,
+           match_id : <?=$row_match['id']?>,
+           time: selectedTime
+       }
+
+       $.post(Url, data, function (response, status) {
+
+           swal.fire({
+               title: response.t,
+               text: response.m,
+               icon: response.tp,
+               showConfirmButton: response.b,
+               confirmButtonText: 'موافق'
+           });
+
+           if (response.tp == "success") {
+               // setTimeout(function () {
+               //     location.href = "./teams.php";
+               // }, 2000);
+               $("#show-time").val(time);
+               $("#hiden-time").val(selectedTime);
+               $('#set-time').modal('hide');
+           }
+       })
+
+
+       //console.log(time + "  " + date)
+
+   }
 
     // for ad center
     $("#center_ads option[value=<?=$row_match['Center_Ad']?>]").attr("selected","selected");
@@ -331,32 +512,24 @@ if (empty($match_id) OR !is_numeric($match_id))
     $("#type3").attr('checked','checked');
     <?php endif; ?>
 
-
-</script>
-
-<script>
-
-    flatpickr.localize(flatpickr.l10ns.ar);
-    $('#time').flatpickr({
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        disableMobile: "true"
-    })
+    // for state of match
+    <?php if ($row_match["State_Match"] == 1):?>
+    $("#state_match").attr('checked','checked');
+    <?php endif; ?>
 
 
 </script>
 
 <script>
-    var start = new Date().getTime();
 
     function addMatch(){
+        $("input").removeClass("border border-danger");
 
 
 
 
 
-
+        var time_now = Math.floor(Date.now() / 1000);
         var ks_link=document.getElementById("ks_link").value;
         var link1=document.getElementById("link1").value;
         var link2=document.getElementById("link2").value;
@@ -364,37 +537,105 @@ if (empty($match_id) OR !is_numeric($match_id))
         var type1=document.getElementById("type1").checked;
         var type2=document.getElementById("type2").checked;
         var type3=document.getElementById("type3").checked;
+        var state_match=document.getElementById("state_match").checked;
         var team_host=document.getElementById("team_host").value;
         var team_goust=document.getElementById("team_goust").value;
         var center_ads=document.getElementById("center_ads").value;
-        var time=document.getElementById("time").value;
-        const Url = "ajax/create_live.php";
+        var time=document.getElementById("hiden-time").value;
+        var token = document.querySelector('meta[name="token"]').content;
+        const Url = "ajax/edit-live.php";
 
 
-        if (time == ""){
+
+        // TOdo: Valtded the Links if not empty
+
+        if(link1 == "" && link2 == "" && link3 == "" && ks_link == ""){
+            Swal.fire({
+                title: 'لا يوجد رابط',
+                text: 'يجب ان يكون هناك رابط سيرفر واحد على الاقل',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'موافق'
+            })
+            return
+        }
+
+        if (ks_link != "" && !validURL(ks_link)){
+            Swal.fire({
+                title: 'تحقق من الرابط',
+                text: 'رابط كوره ستار مدخل بشكل غير صحيح',
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'موافق'
+            })
+            $("#ks_link").addClass("border border-danger");
+            return
+        }
+
+        if (link1 != "" && !validURL(link1)){
+            Swal.fire({
+                title: 'تحقق من الرابط',
+                text: 'رابط سيرفر1 مدخل بشكل غير صحيح',
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'موافق'
+            })
+            $("#link1").addClass("border border-danger");
+            return
+        }
+
+        if (link2 != "" && !validURL(link2)){
+            Swal.fire({
+                title: 'تحقق من الرابط',
+                text: 'رابط سيرفر2 مدخل بشكل غير صحيح',
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'موافق'
+            })
+            $("#link2").addClass("border border-danger");
+            return
+        }
+
+        if (link3 != "" && !validURL(link3)){
+            Swal.fire({
+                title: 'تحقق من الرابط',
+                text: 'رابط سيرفر3 مدخل بشكل غير صحيح',
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'موافق'
+            })
+            $("#link3").addClass("border border-danger");
+            return
+        }
+
+        if ( time <= time_now && state_match){
 
             Swal.fire({
                 title: 'وقت نهاية المبارة',
-                text: "لم يتم تحديد الوقت لذالك سوف يتم تحديد وقت الانتهاء في الساعه <?=$time_stop?>",
-                icon: 'warning',
+                text: 'الوقت المحدد منتهي,  سوف يتم تحديد وقت نهاية المبارة تلقائياً في  <?=$time_stop?>',
+                icon: 'info',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
                 confirmButtonText: 'موافق',
-                cancelButtonText: 'الغاء'
+                cancelButtonText: 'تعديل'
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Todo send data to ajax with new time set
 
                     const data={
+                        links_id : <?php if(!empty($row_match['Custom_Link'])){ echo $row_match['Custom_Link']; }else{ echo "null"; }?>,
+                        match_id : <?=$row_match['id']?>,
                         ks_link: ks_link,
                         link1: link1,
                         link2: link2,
                         link3: link3,
+                        token : token,
 
                         type1: type1,
                         type2: type2,
                         type3: type3,
+                        state_match: state_match,
                         team_host: team_host,
                         team_goust: team_goust,
                         time_type: "auto",
@@ -412,47 +653,62 @@ if (empty($match_id) OR !is_numeric($match_id))
                         });
 
                         if(response.tp == "success"){
-                            setTimeout(function () { location.href = "./index.php";}, 3000);
+                            setTimeout(function () { location.href = "./matches.php";}, 3000);
                         }
                     })
+                }else if(result.dismiss) {
+                    $('#set-time').modal('show');
                 }
             })
 
-        }else {
+            }else {
 
-            const data={
-                ks_link: ks_link,
-                link1: link1,
-                link2: link2,
-                link3: link3,
+                var theTime = document.getElementById("show-time").value;
+                    const data = {
+                        links_id: <?php if (!empty($row_match['Custom_Link'])) {
+                            echo $row_match['Custom_Link'];
+                        } else {
+                            echo "null";
+                        }?>,
+                        match_id: <?=$row_match['id']?>,
+                        ks_link: ks_link,
+                        link1: link1,
+                        link2: link2,
+                        link3: link3,
+                        token: token,
 
-                type1: type1,
-                type2: type2,
-                type3: type3,
-                team_host: team_host,
-                team_goust:team_goust,
-                time_type: "manual",
-                center_ads: center_ads,
-                time : time
+                        type1: type1,
+                        type2: type2,
+                        type3: type3,
+                        state_match: state_match,
+                        team_host: team_host,
+                        team_goust: team_goust,
+                        time_type: "manual",
+                        center_ads: center_ads,
+                        time: theTime
+
+                    }
+                    $.post(Url, data, function (response, status) {
+                        swal.fire({
+                            title: response.t,
+                            text: response.m,
+                            icon: response.tp,
+                            showConfirmButton: response.b,
+                            confirmButtonText: 'موافق'
+                        });
+
+                        if (response.tp == "success") {
+                            setTimeout(function () {
+                                location.href = "./matches.php";
+                            }, 3000);
+                        }
+                    })
 
             }
-            $.post(Url,data ,function (response,status) {
-                swal.fire({
-                    title: response.t,
-                    text: response.m,
-                    icon: response.tp,
-                    showConfirmButton: response.b,
-                    confirmButtonText: 'موافق'
-                });
-
-                if(response.tp == "success"){
-                    setTimeout(function () { location.href = "./index.php";}, 3000);
-                }
-            })
 
         }
 
-    }
+
 </script>
 
 </body>

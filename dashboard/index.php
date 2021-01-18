@@ -66,13 +66,6 @@ include "includes/head.php";
                 <ul class="navbar-nav mr-auto">
 
 
-                    <!-- Nav Item - Alerts -->
-                    <?php include "includes/alert.php"?>
-                    <!-- End of Alert -->
-
-                    <!-- Nav Item - message -->
-                    <?php include "includes/msg.php"?>
-                    <!-- END - message -->
 
                     <!-- Nav Item - Logout and options -->
                     <?php include "includes/logout-menu.php"?>
@@ -97,17 +90,34 @@ include "includes/head.php";
                 <div class="row" >
 
                     <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="col-xl-6 col-md-6 mb-4">
                         <div class="card border-left-dark shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col-auto">
-                                        <i class="fas fa-headset fa-2x text-gray-300"></i>
+                                        <i class="fas fa-futbol fa-2x text-gray-300"></i>
 
                                     </div>
                                     <div class="col mr-2">
-                                        <div class="font-weight-bold text-dark text-uppercase mb-1 text-right Fonty">أجمالي طلبات دعم الفني</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php //echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'support'")->rowCount();  ?> </div>
+                                        <div class="font-weight-bold text-dark text-uppercase mb-1 text-right Fonty">أجمالي المباريات</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php echo  $conn->query("SELECT * FROM `matches`")->rowCount();  ?> </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-md-6 mb-4">
+                        <div class="card border-left-dark shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <i class="far fa-eye fa-2x text-gray-300"></i>
+
+                                    </div>
+                                    <div class="col mr-2">
+                                        <div class="font-weight-bold text-dark text-uppercase mb-1 text-right Fonty">أجمالي عدد الزيارات</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3">  <?php //echo  $conn->query("SELECT * FROM `matches`")->rowCount();  ?> </div>
                                     </div>
 
                                 </div>
@@ -115,57 +125,72 @@ include "includes/head.php";
                         </div>
                     </div>
 
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-dark shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col-auto">
-                                        <i class="fas fa-key fa-2x text-gray-300"></i>
-                                    </div>
-                                    <div class="col mr-2">
-                                        <div class="Fonty font-weight-bold text-dark text-uppercase mb-1 text-right">أجمالي طلبات  مسؤولة المفاتيح</div>
-                                        <div class=" h5 mb-1 font-weight-bold text-gray-800 pl-3"><?php //echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'key'")->rowCount();  ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
 
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-dark shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col-auto">
-                                        <i class="fas fa-user-shield fa-2x text-gray-300"></i>
-                                    </div>
-                                    <div class="col mr-2">
-                                        <div class="font-weight-bold text-dark text-uppercase mb-1 text-right Fonty">أجمالي طلبات الامن</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php //echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'security'")->rowCount();  ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <?php
+                $matches = new Live();
+                $teams = new Equipe();
+                $rows = $matches->getMatchesOn();
+                if(!empty($rows)):
+                ?>
 
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-dark shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col-auto">
-                                        <i class="fas fa-medkit fa-2x text-gray-300"></i>
-                                    </div>
-                                    <div class="col mr-2">
-                                        <div class="font-weight-bold text-dark text-uppercase mb-1 text-right Fonty">أجمالي طلبات الطبيبة</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800  pl-3"><?php //echo  $conn->query("SELECT * FROM `order` WHERE to_who = 'doctor'")->rowCount();  ?></div>
-                                    </div>
+                <div class="row">
+
+                    <div class="col-xl-12 col-lg-12">
+
+                        <!-- Dropdown Card Example -->
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 ">
+                                <h5 class="m-0 font-weight-bold text-dark text-center fonty">المبارايات التي تلعب حالياً</h5>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body"  >
+                                     <div class="table-responsive" dir="ltr">
+
+                                    <table class="table   text-dark   text-center" id="dataTable" width="100%" cellspacing="0" dir="rtl">
+                                        <thead dir="">
+                                        <tr>
+
+                                            <th>عنوان المباراة</th>
+                                            <th>حالة البث</th>
+                                            <th>خيارات</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                        $i=1;
+                                        foreach ($rows as $row) :
+                                            ?>
+                                            <tr>
+
+                                                <td><?php echo getTeamsNames($row["Team_Gust"],$row["Team_Host"])?></td>
+                                                <td> <label class="switch">
+                                                        <input type="checkbox" id="state_match_<?=$row['id']?>" onclick="stopLive(<?=$row['id']?>)" <?php if($row["State_Match"]): ?> checked <?php endif; ?> >
+                                                        <span class="slider round"></span>
+                                                    </label> </td>
+                                                <td>
+                                                    <a href="edit-match.php?id=<?=$row['id']?>" class="btn btn-primary btn-circle"><i class="fas fa-edit"></i> </a>
+                                                    <a href="../match/<?=$row['id']?>" target="_blank" class="btn btn-info btn-circle"><i class="fas fa-eye"></i></a>
+                                                </td>
+                                            </tr>
+
+                                            <?php
+                                            $i++;
+                                        endforeach;
+                                        ?>
+                                        </tbody>
+                                    </table>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                <?php
+                endif;
+                ?>
 
 
             </div>
@@ -174,69 +199,60 @@ include "includes/head.php";
         </div>
         <!-- End of Main Content -->
 
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2020</span>
-                </div>
-            </div>
-        </footer>
-        <!-- End of Footer -->
+        <?php include "includes/footer.php";?>
 
-    </div>
-    <!-- End of Content Wrapper -->
+<script>
 
-</div>
-<!-- End of Page Wrapper -->
+    function stopLive(id) {
+        var token = document.querySelector('meta[name="token"]').content;
+        const Url = "ajax/stop-live.php";
+        const data={
+            matchid : id,
+            token : token
+        }
 
-<!-- Scroll to Top Button-->
-<div class="text-left">
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-</div>
+        $.post(Url,data ,function (response,status) {
+            swal.fire({
+                title: response.t,
+                text: response.m,
+                icon: response.tp,
+                showConfirmButton: response.b,
+                confirmButtonText: 'موافق'
+            });
 
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
+            if(response.tp == "success"){
+                $( "#state_match_"+id ).attr("onclick","runLive("+id+")");
 
-<!-- Bootstrap core JavaScript-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            }
+        })
 
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    }
 
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.js"></script>
+    function runLive(id) {
+        var token = document.querySelector('meta[name="token"]').content;
+        const Url = "ajax/run-live.php";
+        const data={
+            matchid : id ,
+            token : token
+        }
 
-<!-- Page level plugins -->
-<script src="vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+        $.post(Url,data ,function (response,status) {
+            swal.fire({
+                title: response.t,
+                text: response.m,
+                icon: response.tp,
+                showConfirmButton: response.b,
+                confirmButtonText: 'موافق'
+            });
 
-<!-- Page level custom scripts -->
-<script src="js/demo/datatables-demo.js"></script>
+            if(response.tp == "success"){
+                $( "#state_match_"+id ).attr("onclick","stopLive("+id+")");
 
+            }
+        })
 
-<!-- Page level custom scripts -->
-<script src="js/demo/chart-area-demo.js"></script>
-<script src="js/demo/chart-pie-demo.js"></script>
+    }
+</script>
 
 </body>
 

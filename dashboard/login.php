@@ -1,6 +1,10 @@
 <?php
-include "../includes/Database.php";
+
 session_start();
+if(isset($_SESSION['dashId:TVTC']) && !empty($_SESSION['dashId:TVTC'])){
+    header("Location: index.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="ar">
@@ -18,11 +22,15 @@ session_start();
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+<!--    <script src='https://www.google.com/recaptcha/api.js?hl=ar'></script>-->
+    <script src='js/responsiveRecaptcha.js'></script>
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link href="css/mystyle.css" rel="stylesheet">
     <link rel="stylesheet" href="css/sb-admin-2.css">
+    <link rel="stylesheet" href="css/gstyle.css">
+
 <style>
     *{
         font-family: 'Tajawal', sans-serif;
@@ -31,7 +39,16 @@ session_start();
     input[placeholder]{
         text-align: right;
     }
+
 </style>
+
+    <script>
+        ResponsiveRecaptcha({
+            el:'gr',
+            sitekey:'6LfZSyoaAAAAACL5n8EI9-dPtNk1jr_aDupdeqDd '
+        });
+    </script>
+
 </head>
 
 <body class="bg-gradient-primary">
@@ -55,35 +72,6 @@ session_start();
                                 <?php
                                 $alert_pass = false;
                                 $alert_admin = false;
-//                                if(isset($_POST['submit'])){
-//                                    $email = $_POST["email"];
-//                                    $password = $_POST["password"];
-//                                    $stm = $conn->prepare("SELECT * FROM `users` WHERE email=:email");
-//                                    $stm->bindValue(":email", $email);
-//                                    $stm->execute();
-//                                    if($stm->rowCount() != 0){
-//                                        $row = $stm->fetch();
-//                                        $id = $row['id'];
-//                                        $roal = $row['roal'];
-//                                        $db_password = $row['password'];
-//                                        $passwordd = password_verify($password, $db_password);
-//
-//                                        if($roal != 1){
-//                                            $alert_admin = true;
-//                                        }elseif (!$passwordd){
-//                                            $alert_pass = true;
-//                                        }else{
-//                                            $_SESSION['dashId:TVTC'] = $id;
-//                                            $_SESSION['dashName:TVTC'] = $row['name'];
-//                                            exit(header('Location: index.php'));
-//                                        }
-//
-//                                    }else{
-//                                        $alert_pass = true;
-//                                    }
-//
-//
-//                                }
 
                                 ?>
                                 <?php if($alert_pass): ?>
@@ -102,12 +90,18 @@ session_start();
                                     <div class="form-group">
                                         <input type="password" class="form-control form-control-user" name="password" id="password" placeholder="كلمة المرور" required>
                                     </div>
+
+
+                                    <div class="form-group text-center">
+                                       <div class="g-recaptcha" data-theme="light" id="gr" data-sitekey="6LfZSyoaAAAAACL5n8EI9-dPtNk1jr_aDupdeqDd"  ></div>
+                                    </div>
+
                                     <input type="submit" id="submit" onclick="login()" value="دخول" class="btn btn-primary btn-user font-weight-bold Font-tajawal btn-block">
                                 </form>
                                 <hr>
-                                <div class="text-center">
-                                    <a class="small" href="../forgotpassword.php">نسيت كلمة المرور؟</a>
-                                </div>
+<!--                                <div class="text-center">-->
+<!--                                    <a class="small" href="../forgotpassword.php">نسيت كلمة المرور؟</a>-->
+<!--                                </div>-->
 <!--                                <div class="text-center">-->
 <!--                                    <a class="small" href="register.php">ليس لديك حساب بعد؟ تسجيل جديد</a>-->
 <!--                                </div>-->
@@ -143,12 +137,26 @@ session_start();
 
         var email=document.getElementById("email").value;
         var password=document.getElementById("password").value;
+        var g_response = grecaptcha.getResponse();
+
+
+        if(!g_response){
+            swal({
+                title: "خطاء",
+                text: "الرجاء التحقق انك لست روبوت",
+                type: "error",
+                showConfirmButton: true,
+                confirmButtonText: 'موافق'
+            });
+            return
+        }
 
 
         const Url = "ajax/login.php";
         const data={
             email: email,
-            password: password
+            password: password,
+            reCAPTCHA: g_response
         }
         $.post(Url,data ,function (response,status) {
             // console.log(response.m);

@@ -1,52 +1,22 @@
+
 <?php
-
-//if(!isset($_GET['do'])): header("Location: index.php"); die(); endif;
-//if(isset($_GET['do'])){
-//
-//    $do = $_GET['do'];
-//
-//    switch ($do){
-//        case 'support':
-//            $job = "الدعم الفني";
-//            break;
-//
-//        case 'key':
-//            $job = "مسؤولة المفاتيح";
-//            break;
-//
-//        case 'security':
-//            $job = "الامن";
-//            break;
-//
-//        case 'doctor':
-//            $job = "الطبيبة";
-//            break;
-//
-//        default:
-//            $job = "";
-//    }
-//    if(empty($job)){
-//        header("Location: index.php"); die();
-//    }
-//
-//    $lable = " نموذج " . $job;
-//}
-
+if(isset($_GET['id'])):
+    $user_id = (int)$_GET['id'];
+endif;
+if(empty($user_id) OR !is_numeric($user_id))
+    exit(header("Location: ads.php"));
 ?>
-<?php include "includes/head.php";?>
 <?php
-$updated = false;
-if(!isset($_GET['id'])){exit(header('Location: index.php')); die();}
-$userId = (int)$_GET['id'];
-if(empty($userId)){exit(header('Location: index.php')); die();}
-$stmt=$conn->prepare("SELECT * FROM users WHERE id=:id");
-$stmt->bindValue(":id", $userId);
-$stmt->execute();
-$row = $stmt->fetch();
-if($row['roal'] == 4 ){
-    $aStudent = true;
-}else{
-    $aStudent = false;
+
+include "includes/head.php";
+if ($_SESSION['dashRank:TVTC'] != "admin") {
+    exit(header("Location: index.php"));
+}
+$user = new User();
+$row = $user->getById($user_id);
+if(!$row){
+
+    exit("<script>location.href = \"./index.php\";</script>");
 }
 ?>
 <style>
@@ -115,13 +85,6 @@ if($row['roal'] == 4 ){
                 <ul class="navbar-nav mr-auto">
 
 
-                    <!-- Nav Item - Alerts -->
-                    <?php include "includes/alert.php"?>
-                    <!-- End of Alert -->
-
-                    <!-- Nav Item - message -->
-                    <?php include "includes/msg.php"?>
-                    <!-- END - message -->
 
                     <!-- Nav Item - Logout and options -->
                     <?php include "includes/logout-menu.php"?>
@@ -149,98 +112,46 @@ if($row['roal'] == 4 ){
 
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-dark Font-tajawal text-center">  تعديل بيانات <?php echo ($aStudent) ? 'الطالب' : "المسؤول" ?>  </h6>
+                                <h6 class="m-0 font-weight-bold text-dark Font-tajawal text-center">  تعديل بيانات المستخدم   </h6>
                             </div>
                             <div class="card-body">
 
-                                <?php
-                                if(isset($_POST['update'])){
-                                    $name = $_POST['name'];
-                                    $email = $_POST['email'];
-                                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                                       exit("<div class=\"alert alert-danger text-center \"> الائميل غير صحيح </div>");
-                                    }
-
-                                    // check if email is alredy used
-                                    $stmte=$conn->prepare("SELECT email FROM users where email = :email");
-                                    $stmte->bindValue(":email", $email);
-                                    $stmte->execute();
+                                <form onsubmit="return false" class="text-right">
 
 
 
-                                    if($aStudent){
-                                        //Todo Updtet student
-
-
-                                            if($email == $row['email']):
-                                            else:
-                                               if($stmte->rowCount() > 0){
-                                                   exit("<div class=\"alert alert-danger text-center \"> هذا الائميل مُسجل مسبقاً <a href='' class='btn-link'> عودة </a> </div>");
-                                               }
-                                            endif;
-
-                                        $stmtu=$conn->prepare("UPDATE `users` SET `name`=:name,`email`=:email WHERE id = :id");
-                                        $stmtu->bindValue(":name", $name);
-                                        $stmtu->bindValue(":email", $email);
-                                        $stmtu->bindValue(":id", $userId);
-                                        $stmtu->execute();
-                                        if($stmtu->rowCount() > 0){
-                                            $updated = true;
-                                            echo "<div class=\"alert alert-success text-center\"> تم التحديث بيانات الطالب بنجاح </div>";
-                                        }
-
-                                    }else{
-                                        //Todo Update one in Depart
-
-                                        $depart = $_POST['dep'];
-
-                                        if($depart == "0"){ exit("<div class=\"alert alert-danger text-center\"> يجب أختيار القسم <a href='' class='btn-link'> عودة </a> </div>"); }
-
-                                        $stmtu=$conn->prepare("UPDATE `users` SET `name`=:name,`email`=:email,roal=:roal WHERE id = :id");
-                                        $stmtu->bindValue(":name", $name);
-                                        $stmtu->bindValue(":email", $email);
-                                        $stmtu->bindValue(":roal", $depart);
-                                        $stmtu->bindValue(":id", $userId);
-                                        $stmtu->execute();
-                                        if($stmtu->rowCount() > 0){
-                                            $updated = true;
-                                            echo "<div class=\"alert alert-success text-center\"> تم التحديث بيانات المسؤال بنجاح </div>";
-                                        }
-
-                                    }
-                                }
-                                ?>
-
-                                <form action="" method="post" class="text-right">
-
-                                    <label for="username" class="pull-right text-dark">اسم <?php echo ($aStudent) ? 'الطالب' : "المسؤول" ?></label>
+                                    <label for="username" class="pull-right text-dark">اسم المستخدم </label>
                                     <div class="form-group">
-                                        <input type="text" name="name" class="form-control form-control-user"  value="<?php if($updated){ echo $name;}else{  echo $row['name']; }?>" required>
+                                        <input type="hidden" value="<?=$user_id?>" id="user_id">
+                                        <input type="text" class="form-control form-control-user" id="username"  value="<?=$row['Username'];?>" required>
                                     </div>
 
-                                    <label for="username" class="pull-right text-dark">إئميل <?php echo ($aStudent) ? 'الطالب' : "المسؤول" ?></label>
+                                    <label for="email" class="pull-right text-dark">الائميل </label>
                                     <div class="form-group">
-                                        <input type="email" name="email" class="form-control form-control-user" value="<?php if($updated){ echo $email;}else{  echo $row['email']; }?>" required>
+                                        <input type="email" class="form-control form-control-user" id="email"  value="<?=$row['Email'];?>" required>
                                     </div>
 
-                                    <?php
-                                    if(!$aStudent):
-                                    ?>
-                                    <label for="username" class="pull-right text-dark">القسم</label>
+                                    <label for="password" class="pull-right text-dark">كلمة المرور الجديدة <small> (أتركه فارغ اذا لاتريد التغير) </small> </label>
                                     <div class="form-group">
-                                        <select class="form-control" name="dep">
-                                            <option value="0" id="0">أختار القسم</option>
-                                            <option value="2" id="2">الامن</option>
-                                            <option value="1" id="1">الدعم الفني</option>
-                                            <option value="5" id="5">مسؤولة المفاتيح</option>
-                                            <option value="3" id="3" >الطبيبة</option>
+                                        <input type="password" class="form-control form-control-user" id="password" >
+                                    </div>
+
+                                    <label for="repassword" class="pull-right text-dark">اعادة كلمة المرور الجديدة <small> (أتركه فارغ اذا لاتريد التغير) </small> </label>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control form-control-user" id="repassword">
+                                    </div>
+
+                                    <label for="select" class="pull-right text-dark">حالة الاعلان</label>
+                                    <div class="form-group">
+                                        <select class="form-control" name="dep" id="select">
+                                            <option value="admin" id="admin">مشرف</option>
+                                            <option value="user" id="user">مستخدم</option>
+
                                         </select>
                                     </div>
-                                    <?php
-                                    endif;
-                                    ?>
 
-                                    <input type="submit" name="update" value="تعديل" class="btn btn-dark btn-block">
+
+                                    <input type="submit"  onclick="update()" value="تعديل" class="btn btn-dark btn-block">
 
                                 </form>
 
@@ -264,69 +175,78 @@ if($row['roal'] == 4 ){
 <!-- End of Main Content -->
 
 
-<!-- Footer -->
-<footer class="sticky-footer bg-white">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2020</span>
-        </div>
-    </div>
-</footer>
-<!-- End of Footer -->
+<?php include "includes/footer.php";?>
 
-</div>
-<!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<div class="text-left">
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-</div>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap core JavaScript-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.js"></script>
-
-<!-- Page level plugins -->
-<script src="vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="js/demo/datatables-demo.js"></script>
-
-
-<!-- Page level custom scripts -->
 <script>
-    $('#<?php if($updated){ echo $depart;}else{  echo $row['roal']; }?>').attr("selected","selected");
+    <?php if($row['Roal'] == "user"): ?>  $("#user").attr("selected","selected");  <?php endif; ?>
+    <?php if($row['Roal'] == "admin"): ?>  $("#admin").attr("selected","selected");  <?php endif; ?>
+
+
+</script>
+
+<script>
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+    function update() {
+
+
+
+        var username = document.getElementById("username").value;
+        var email = document.getElementById("email").value;
+        var roal = document.getElementById("select").value;
+        var userId = document.getElementById("user_id").value;
+        var password = document.getElementById("password").value;
+        var repassword = document.getElementById("repassword").value;
+        var token = document.querySelector('meta[name="token"]').content;
+
+        if(password != "" && password !== repassword){
+
+               swal.fire({
+                   title: "خطاء",
+                   text: "كلمة السر غير متطابقتين",
+                   icon: "warning",
+                   showConfirmButton: true,
+                   confirmButtonText: 'موافق'
+               });
+
+        }else if(!validateEmail(email)){
+
+            swal.fire({
+                title: "خطاء",
+                text: "يجب ان يكتب الائميل بشكل صحيح",
+                icon: "warning",
+                showConfirmButton: true,
+                confirmButtonText: 'موافق'
+            });
+
+        }else {
+
+            const Url = "ajax/edit-user.php";
+            const data={
+                username: username,
+                email: email,
+                password: password,
+                roal: roal,
+                token : token,
+                user_id: <?=$user_id?>
+            }
+            $.post(Url,data ,function (response,status) {
+                swal.fire({
+                    title: response.t,
+                    text: response.m,
+                    icon: response.tp,
+                    showConfirmButton: response.b,
+                    confirmButtonText: 'موافق'
+                });
+                if(response.tp == "success"){
+                    setTimeout(function () { location.href = "./users.php";}, 3000);
+                }
+            })
+        }
+    }
+
 </script>
 </body>
 

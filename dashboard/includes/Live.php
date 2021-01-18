@@ -1,6 +1,6 @@
 <?php
 
-require_once ("DataBase1");
+require_once("Database.php");
 class Live extends Db_Object
 {
 
@@ -18,6 +18,35 @@ class Live extends Db_Object
     public $Center_Ad;
 
 
+    public function getMatchesOn(){
+        global $conn;
+        $stmt = $conn->prepare("SELECT * FROM matches WHERE State_Match = 1 ");
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return $result;
+    }
+
+    public function stopLive($id){
+        global $conn;
+        $stmt = $conn->prepare("UPDATE `matches` SET `State_Match`= 0 WHERE id = :id");
+        $stmt->bindValue(":id",$id);
+      return  $stmt->execute();
+    }
+
+    public function runLive($id){
+        global $conn;
+        $stmt = $conn->prepare("UPDATE `matches` SET `State_Match`= 1 WHERE id = :id");
+        $stmt->bindValue(":id",$id);
+      return  $stmt->execute();
+    }
+
+    public function updateTimeById($id){
+        global $conn;
+        $stmt = $conn->prepare("UPDATE `matches` SET `Time_OFF`= :time_off WHERE id = :id");
+        $stmt->bindValue(":time_off",$this->Time_OFF);
+        $stmt->bindValue(":id",$id);
+      return  $stmt->execute();
+    }
 
 
 

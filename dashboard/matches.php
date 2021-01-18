@@ -68,13 +68,6 @@ $msg_true = false;
                 <ul class="navbar-nav mr-auto">
 
 
-                    <!-- Nav Item - Alerts -->
-                    <?php include "includes/alert.php"?>
-                    <!-- End of Alert -->
-
-                    <!-- Nav Item - message -->
-                    <?php include "includes/msg.php"?>
-                    <!-- END - message -->
 
                     <!-- Nav Item - Logout and options -->
                     <?php include "includes/logout-menu.php"?>
@@ -118,42 +111,44 @@ $msg_true = false;
 
 
                                 ?>
-                                <div class="table-responsive">
+                                <div class="table-responsive" dir="ltr">
 
-                                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0" dir="rtl">
-                                        <thead dir="">
+                                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0" dir="rtl" >
+                                        <thead >
                                         <tr>
+                                            <th>NO.</th>
                                             <th>مباراة</th>
-                                            <th>اعلان المنتصف</th>
-                                            <th>عرض المشغلات</th>
-                                            <th>صفحة البث</th>
-                                            <th>تحرير</th>
+                                            <th id="spare" style="display: none">شغال</th>
+<!--                                            <th>عرض المشغلات</th>-->
+<!--                                            <th>صفحة البث</th>-->
+                                            <th>خيارات</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <?php
                                         $matches = new Live();
-                                        $team = new Equipe();
-                                        $matches = $matches->getAll();
-                                            foreach ($matches as $row) :
+                                        $teams = new Equipe();
+                                        $rows = $matches->getAll();
+                                            foreach ($rows as $row) :
+                                                // get the true mark from getState function and remove the text only i need the mark
+                                                $sta = getState($row["State_Match"]);
+                                                $markOnly = str_replace(array("فعال", "غير"),"", getState($row["State_Match"]));
                                                 ?>
                                                 <tr>
-                                                    <td><?=getTeamsNames($row["Team_Gust"],$row["Team_Host"])?></td>
-                                                    <td><?php echo checkCenterAd((int)$row['Center_Ad']);?></td>
-                                                    <td><?php echo $row['Custom_Link']?></td>
-                                                    <td><a href="#" class="btn btn-info btn-icon-split btn-sm"><span class="icon text-white-50"><i class="far fa-eye"></i></span><span class="text">مشاهدة</span></a></td>
-                                                    <td><a href="edit-match.php?id=<?=$row['id']?>" class="btn btn-primary btn-circle"><i class="fas fa-edit"></i> </a> <a href="#" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></a></td>
+                                                    <td><?php echo $row['id']?></td>
+                                                    <td><?=getTeamsNames($row["Team_Gust"],$row["Team_Host"])?> <?=$markOnly?> </td>
+                                                    <td style="display: none" id="spare"> <?php if($row["State_Match"] == 1): echo 1; else: echo 0; endif;?> </td>
+                                                    <td>
+                                                        <a href="edit-match.php?id=<?=$row['id']?>" class="btn btn-primary btn-circle"><i class="fas fa-edit"></i> </a>
+                                                        <a href="../match/<?=$row['id']?>" target="_blank" class="btn btn-info btn-circle"><i class="fas fa-eye"></i></a>
+                                                        <a href="#" onclick="deletMatch(<?=$row['id']?>)" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></a>
+                                                    </td>
                                                 </tr>
                                             <?php
                                             endforeach;
                                         ?>
                                         </tbody>
                                     </table>
-<!--                                    <div class="text-center pt-3 ">-->
-<!---->
-<!--                                        <a href="add-match.php?supervisor" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-plus"></i></span><span class="text"> أضافة مُدربة </span></a> &nbsp; <a href="add-match.php" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-plus"></i></span><span class="text"> أضافة بيانات </span></a>-->
-<!---->
-<!--                                    </div>-->
                                 </div>
 
                             </div>
@@ -176,92 +171,66 @@ $msg_true = false;
 <!-- End of Main Content -->
 
 
-<!-- Footer -->
-<footer class="sticky-footer bg-white">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2020</span>
-        </div>
-    </div>
-</footer>
-<!-- End of Footer -->
-
-</div>
-<!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<div class="text-left">
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-</div>
-
-<div id="delete-lost" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-            <div class="modal-header bg-dark">
-                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title text-white"> </h4>
-            </div>
-            <div class="modal-body" style="font-size: 16px;">
-                <div class="text-center">
-                    <p class="text-justify text-dark text-center">
-                        هل متاكد من حذف البيانات؟
-                    </p>
-                    <a href="#" id="delete-link" class="btn btn-dark"> نعم </a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap core JavaScript-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.js"></script>
-
-
-<!-- Page level plugins -->
-<script src="vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="js/demo/datatables-demo.js"></script>
+<?php include "includes/footer.php";?>
 
 <script>
+
+    $("#spare").hide();
+
+    var table = $('#dataTable').DataTable();
+
+    // Sort by column 1 and then re-draw
+    table
+        .order( [ 2, 'desc' ] )
+        .draw();
 
     function  myf(id){
 
         $("#delete-link").attr("href", "delete-page.php?type=list&id="+id);
         $("#delete-lost").modal("show");
+    }
+
+    function deletMatch(id) {
+
+
+        const Url = "ajax/delete_live.php";
+        var token = document.querySelector('meta[name="token"]').content;
+
+
+        Swal.fire({
+            title: 'حذف المبارة',
+            text: "هل متاكد من حذف المباراة نهائياً؟",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم',
+            cancelButtonText: 'الغاء'
+        })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    // Todo send data to ajax with new time set
+
+                    const data={
+                        match_id: id,
+                        token : token
+                    }
+                    $.post(Url,data ,function (response,status) {
+
+                        swal.fire({
+                            title: response.t,
+                            text: response.m,
+                            icon: response.tp,
+                            showConfirmButton: response.b,
+                            confirmButtonText: 'موافق'
+                        });
+
+                        if(response.tp == "success"){
+                            setTimeout(function () { location.href = "./matches.php";}, 1000);
+                        }
+                    })
+                }
+            })
     }
 </script>
 

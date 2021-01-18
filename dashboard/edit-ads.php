@@ -9,6 +9,9 @@ if(empty($ad_id) OR !is_numeric($ad_id))
 <?php
 
 include "includes/head.php";
+if ($_SESSION['dashRank:TVTC'] != "admin") {
+    exit(header("Location: index.php"));
+}
 $ad = new Ads();
 $row = $ad->getById($ad_id);
 ?>
@@ -78,13 +81,6 @@ $row = $ad->getById($ad_id);
                 <ul class="navbar-nav mr-auto">
 
 
-                    <!-- Nav Item - Alerts -->
-                    <?php include "includes/alert.php"?>
-                    <!-- End of Alert -->
-
-                    <!-- Nav Item - message -->
-                    <?php include "includes/msg.php"?>
-                    <!-- END - message -->
 
                     <!-- Nav Item - Logout and options -->
                     <?php include "includes/logout-menu.php"?>
@@ -124,12 +120,6 @@ $row = $ad->getById($ad_id);
                                         <input type="text" class="form-control form-control-user" id="ad_name"  value="<?=$row['Ads_Name'];?>" required>
                                     </div>
 
-                                    <label for="username" class="pull-right text-dark">شفرة الاعلان</label>
-                                    <div class="form-group" dir="ltr">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" id="ad_code" rows="7"><?=$row['Ads_Code']?></textarea>
-
-                                    </div>
-
                                     <?php
 
                                         ?>
@@ -167,47 +157,7 @@ $row = $ad->getById($ad_id);
 <!-- End of Main Content -->
 
 
-<!-- Footer -->
-<footer class="sticky-footer bg-white">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2020</span>
-        </div>
-    </div>
-</footer>
-<!-- End of Footer -->
-
-</div>
-<!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<div class="text-left">
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-</div>
-
-
-
-<!-- Bootstrap core JavaScript-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.js"></script>
-
-<!-- Page level plugins -->
-<script src="vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="js/demo/datatables-demo.js"></script>
+<?php include "includes/footer.php";?>
 
 
 <!-- Page level custom scripts -->
@@ -221,14 +171,15 @@ $row = $ad->getById($ad_id);
 <script>
     function update() {
 
-        var ad_code = $("textarea").val();
+
         var ad_name = document.getElementById("ad_name").value;
         var ad_type = document.getElementById("select").value;
+        var token = document.querySelector('meta[name="token"]').content;
         const Url = "ajax/edit-ads.php";
         const data={
-            ad_code: ad_code,
             ad_name: ad_name,
             ad_type: ad_type,
+            token : token,
             ad_id: <?=$ad_id?>
         }
         $.post(Url,data ,function (response,status) {
